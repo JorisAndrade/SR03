@@ -19,6 +19,11 @@
 #define DEM_PANIER 2
 #define DEM_LISTE 3
 #define DEM_INFOS 4
+#define CLT_LEAVE 5
+
+//Limitations
+#define NB_MAX_CLT_SIM 2
+#define NB_MAX_CLT 4
 
 typedef struct {
     long type;
