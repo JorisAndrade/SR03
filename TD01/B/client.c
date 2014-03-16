@@ -30,6 +30,11 @@ int main() {
     msgrcv(id_msg, (void*)&message, msg_size, REP_NUM_CLT, 0);
     num_client = message.num_client;
 
+    if (num_client == -1) {
+        perror("Nombre maximum de clients (simultanés) atteint");
+        exit(EXIT_FAILURE);
+    }
+
     int selection = 0;
 
     do {
@@ -42,6 +47,14 @@ int main() {
         scanf("%d", &selection );
 
         switch(selection) {
+            case 0:
+                message.req = CLT_LEAVE;
+                message.type = REQ_SRV;
+                msgsnd(id_msg, (void*)&message, msg_size, 0);
+                msgrcv(id_msg, (void*)&message, msg_size, num_client, 0);
+                printf("\nClient quit properly\n");
+                exit(0);
+            break;
             case 1:
                 message.req = DEM_PANIER;
                 message.type = REQ_SRV;
@@ -74,5 +87,5 @@ int main() {
                 printf("\nRéponse : Prix : %d, Stock: %d", message.object_price, message.object_qty);
             break;
         }
-    } while (selection != 0);
+    } while (1);
 }
