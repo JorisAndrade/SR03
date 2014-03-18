@@ -15,7 +15,7 @@ int main() {
         perror("ftok()");
         exit(EXIT_FAILURE);
     }
-    id_msg = msgget(clef, IPC_CREAT|0666);
+    id_msg = msgget(clef, IPC_CREAT|IPC_EXCL|0666);
     if(id_msg == -1) {
         perror("Erreur creation de la file de message impossible\n");
         perror("msget()");
@@ -79,7 +79,7 @@ int main() {
                 printf("Active clients decreased: %d\n", active_clients);
                 message.type = message.num_client;
                 msgsnd(id_msg, (void*)&message, msg_size, 0);
-                if (auto_incr > NB_MAX_CLT) {
+                if ( !active_clients && auto_incr > NB_MAX_CLT) {
                     printf("Fermeture du magasin\n");
                     exit(0);
                 }
