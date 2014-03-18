@@ -1,12 +1,18 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "iniobj.h" 
 
 int main(int argc, char **argv) {
-
-    int sd, struct sockaddr_in saddrcli, saddrserv;
+    
+    init();
+    
+    int sd;
+    struct sockaddr_in saddrcli;
+    struct sockaddr_in saddrserv;
     struct hostent * hid;
 
     sd = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -35,10 +41,25 @@ int main(int argc, char **argv) {
             hid = gethostbyname(argv[1]);
 
             /* Copy n bytes from hid->h_addr to saddrserv.sin_addr.s_addr */
-            bcopy(hid->h_addr, &(saddrserv.sin_addr.s_addr), sizeof(hid->h_length))
+            bcopy(hid->h_addr, &(saddrserv.sin_addr.s_addr), sizeof(hid->h_length));
 
             /* Connect créé le socket coté client si pas encore créé de ligne 16 à 28*/
-            connect(sd, (struct sockaddr *) &saddrserv, sizeof(saddrserv));
+            if (connect(sd, (struct sockaddr *) &saddrserv, sizeof(saddrserv)) < 0 ) {
+
+            }
+
+            char* string = "te";
+            
+            int taille = strlen(string);
+            
+            if (send(sd, string, taille, 0) != taille) {
+                perror("erreur connect");
+                exit(EXIT_FAILURE);
+            }
+            
+            
+            printf("ici le client a bien send");
 
         }
+    }
 }
