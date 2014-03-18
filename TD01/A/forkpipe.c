@@ -124,6 +124,7 @@ int main() {
 							// est enlevée du buffer
 							new_line = 1;
 							char_full_line_read -= line_length;
+							// Engendre des bugs ?! remplacer par strcpy eventuellement (sans indiquer la taille)
 							memcpy(full_line_buffer, &full_line_buffer[line_length], char_full_line_read);
 						}
 
