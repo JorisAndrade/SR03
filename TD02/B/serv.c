@@ -7,7 +7,17 @@
 #include <strings.h>
 #include <string.h>
 #include <netdb.h>
+#include <signal.h>
 #include "defobj.h"
+
+
+void handler_fin_fils() {
+    int pid, status;
+    pid = wait(&status);
+    printf("handler : fin processus fils pid %d status %d\n", pid, status);
+    fflush(stdout);
+}
+
 
 
 int main(int argc, char **argv) {
@@ -19,6 +29,9 @@ int main(int argc, char **argv) {
     pid_t cpid1;
     int recvMsgSize;
     obj objet_buffer;
+
+    signal(SIGCHLD, handler_fin_fils);
+
 
     sd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sd == -1) {
@@ -63,6 +76,9 @@ int main(int argc, char **argv) {
  	            while (1) {
                     recvMsgSize = recv(sds, &objet_buffer, sizeof(objet_buffer), 0);
 
+                    //simulation d'une conversation longue
+                    sleep(1);
+
  	                if (recvMsgSize <= 0) {
  	                    perror("erreur reception message ou client deconnecté");
  	                }
@@ -74,20 +90,6 @@ int main(int argc, char **argv) {
                         exit(EXIT_SUCCESS);
                     }
  	            }
- 	        break;
- 	        default:
-     	        switch(waitpid(cpid1, &rc_buf,WUNTRACED)) {
-			        case (pid_t)-1 :
-				        perror("pere : erreur waitpid fils");
-			        break;
-			        default:
-				        if (WIFEXITED(rc_buf)) {
-					        printf("pere : code retour du fils : %d\n", WEXITSTATUS(rc_buf));
-				        }
-                        printf("fin du serveur\n");
-                        exit(EXIT_SUCCESS);
-			        break;
-		        }
  	        break;
         }
     }
