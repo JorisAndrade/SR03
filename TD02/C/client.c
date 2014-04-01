@@ -6,15 +6,14 @@
 #include <netdb.h>
 #include <strings.h>
 #include <string.h>
-#include "iniobj.h" 
+#include "iniobj.h"
 
 int main(int argc, char **argv) {
-    
+
     init();
     obj_tab[tablen - 1].iqt = 1;
-    
-    int sd, msg_size, recvMsgSize;
-    obj msg_rcv;
+    donnees_infos infos;
+    int sd;
     struct sockaddr_in saddrcli;
     struct sockaddr_in saddrserv;
     struct hostent * hid;
@@ -67,23 +66,46 @@ int main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
 
-        // Réception de la taille du message
-        recvMsgSize = recv(sd, &msg_size, sizeof(int), 0); 
+        do {
+            // Réception de la taille et qty de l'attributs
+            rcv_new_msg(sd, &infos, sizeof(infos));
 
-        if (recvMsgSize <= 0) {
-            perror("erreur reception message ou serveur deconnecté");
-        }
+            printf("Rcv : type : %d  qty : %d\n", infos.type, infos.qty);
 
-        // Réception de la taille du message
-        recvMsgSize = recv(sd, &msg_rcv, msg_size, 0); 
+            char * rcv_string;
+            int * rcv_int;
+            double * rcv_double;
 
-        if (recvMsgSize <= 0) {
-            perror("erreur reception message ou serveur deconnecté");
-        }
+            switch(infos.type) {
+                case 0: //char
+                    rcv_string = (char*) malloc((sizeof(char) * infos.qty) + 1);
+                    printf("OKKKK %d\n", sizeof(rcv_string));
+                    rcv_new_msg(sd, &rcv_string, sizeof(char) * infos.qty);
+                    printf("Rcv char : %s \n", rcv_string);
+                    rcv_string = malloc(sizeof(char) * infos.qty);
+                    free(rcv_string);
+                break;
+                case 1: //int
+                    rcv_int = (int*) malloc(sizeof(int) * infos.qty);
+                    rcv_new_msg(sd, &rcv_int, sizeof(int) * infos.qty);
+                    printf("Rcv int : %d \n", *rcv_int);
+                    free(rcv_int);
+                break;
+                case 2: // double
+                    rcv_double = (double*) malloc(sizeof(double) * infos.qty);
+                    rcv_new_msg(sd, &rcv_double, sizeof(double) * infos.qty);
+                    printf("Rcv double : %f \n", *rcv_double);
+                    free(rcv_double);
+                break;
+                case -1:
+                    printf("Fin de Réception de l'objet\n\n");
+                break;
+                default: perror("réception d'un type invalide");
+            }
 
-        print_objet(&msg_rcv);
+        } while (infos.qty != -1);
     }
-    
+
     printf("Fin du client\n");
 
 }

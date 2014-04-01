@@ -8,6 +8,7 @@
 #include <string.h>
 #include <netdb.h>
 #include <signal.h>
+#include <unistd.h>
 #include "defobj.h"
 
 
@@ -23,10 +24,12 @@ void handler_fin_fils() {
 int main(int argc, char **argv) {
 
     int sd;
+    int i;
     struct sockaddr_in saddr;
     int sds;
     int rc_buf;
     pid_t cpid1;
+    donnees_infos infos;
     obj objet_buffer;
 
     signal(SIGCHLD, handler_fin_fils);
@@ -39,6 +42,8 @@ int main(int argc, char **argv) {
     }
 
     bzero(&saddr, sizeof(saddr));
+
+
 
     /* Internet address family */
     saddr.sin_family = AF_INET;
@@ -73,14 +78,11 @@ int main(int argc, char **argv) {
 	        break;
  	        case 0 : // Processus Fils
  	            while (1) {
-                    int recvMsgSize = recv(sds, &objet_buffer, sizeof(objet_buffer), 0);
 
-                    //simulation d'une conversation longue
-                    sleep(1);
 
- 	                if (recvMsgSize <= 0) {
- 	                    perror("erreur reception message ou client deconnecté");
- 	                }
+                    rcv_new_msg(sds, &objet_buffer, sizeof(objet_buffer));
+
+
 
                     print_objet(&objet_buffer);
 
@@ -90,17 +92,40 @@ int main(int argc, char **argv) {
                     objet_buffer.jj++;
                     objet_buffer.dd++;
 
-                    int msg_size = sizeof(objet_buffer);
+                    //Envoi string1
+                    infos.type = 0;
+                    infos.qty = sizeof(objet_buffer.string1)/sizeof(char);
+                    sd_new_msg(sds, &infos, sizeof(infos));
+                    sd_new_msg(sds, &objet_buffer.string1, sizeof(objet_buffer.string1));
 
-                    if (send(sds, &msg_size, sizeof(int), 0) != sizeof(int)) {
-                        perror("erreur envoie de la taille du message");
-                        exit(EXIT_FAILURE);
-                    }
+                    //Envoi string2
+                    infos.type = 0;
+                    infos.qty = sizeof(objet_buffer.string2)/sizeof(char);
+                    sd_new_msg(sds, &infos, sizeof(infos));
+                    sd_new_msg(sds, &objet_buffer.string2, sizeof(objet_buffer.string2));
 
-                    if (send(sds, &objet_buffer, sizeof(objet_buffer), 0) != sizeof(objet_buffer)) {
-                        perror("erreur envoie de l'objet");
-                        exit(EXIT_FAILURE);
-                    }
+                    //Envoi ii
+                    infos.type = 1;
+                    infos.qty = sizeof(objet_buffer.ii)/sizeof(typeof(objet_buffer.ii));
+                    sd_new_msg(sds, &infos, sizeof(infos));
+                    sd_new_msg(sds, &objet_buffer.ii, sizeof(objet_buffer.ii));
+
+                    //Envoi jj
+                    infos.type = 1;
+                    infos.qty = sizeof(objet_buffer.jj)/sizeof(typeof(objet_buffer.jj));
+                    sd_new_msg(sds, &infos, sizeof(infos));
+                    sd_new_msg(sds, &objet_buffer.jj, sizeof(objet_buffer.jj));
+
+                    //Envoi dd
+                    infos.type = 2;
+                    infos.qty = sizeof(objet_buffer.dd)/sizeof(typeof(objet_buffer.dd));
+                    sd_new_msg(sds, &infos, sizeof(infos));
+                    sd_new_msg(sds, &objet_buffer.dd, sizeof(objet_buffer.dd));
+
+                    //Envoi fin de structure
+                    infos.type = -1;
+                    infos.qty = -1;
+                    sd_new_msg(sds, &infos, sizeof(infos));
 
                     if (objet_buffer.iqt == 1){
                         printf("dernier objet reçu\n");
