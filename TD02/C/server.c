@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
 
                     rcv_new_msg(sds, &objet_buffer, sizeof(objet_buffer));
 
-
+                    sleep(1);
 
                     print_objet(&objet_buffer);
 
