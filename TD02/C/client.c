@@ -70,30 +70,27 @@ int main(int argc, char **argv) {
             // Réception de la taille et qty de l'attributs
             rcv_new_msg(sd, &infos, sizeof(infos));
 
-            printf("Rcv : type : %d  qty : %d\n", infos.type, infos.qty);
-
             char * rcv_string;
             int * rcv_int;
             double * rcv_double;
 
             switch(infos.type) {
                 case 0: //char
-                    rcv_string = (char*) malloc((sizeof(char) * infos.qty) + 1);
-                    printf("OKKKK %d\n", sizeof(rcv_string));
-                    rcv_new_msg(sd, &rcv_string, sizeof(char) * infos.qty);
+                    rcv_string = (char*) malloc(sizeof(char) * infos.qty);
+                    rcv_new_msg(sd, rcv_string, sizeof(char) * infos.qty);
                     printf("Rcv char : %s \n", rcv_string);
                     rcv_string = malloc(sizeof(char) * infos.qty);
                     free(rcv_string);
                 break;
                 case 1: //int
                     rcv_int = (int*) malloc(sizeof(int) * infos.qty);
-                    rcv_new_msg(sd, &rcv_int, sizeof(int) * infos.qty);
+                    rcv_new_msg(sd, rcv_int, sizeof(int) * infos.qty);
                     printf("Rcv int : %d \n", *rcv_int);
                     free(rcv_int);
                 break;
                 case 2: // double
                     rcv_double = (double*) malloc(sizeof(double) * infos.qty);
-                    rcv_new_msg(sd, &rcv_double, sizeof(double) * infos.qty);
+                    rcv_new_msg(sd, rcv_double, sizeof(double) * infos.qty);
                     printf("Rcv double : %f \n", *rcv_double);
                     free(rcv_double);
                 break;
