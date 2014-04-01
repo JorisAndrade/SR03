@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!-- saved from url=(0055)http://moodle.utc.fr/file.php/872/exercicesWeb2014.html -->
+<html><!-- Modifié mars 2014 - UTC --><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<title>/HTTP - CSS - JavaScript/Ajax - PHP/</title>
+<style type="text/css">
+<!--
+P.dummy{ Background-Color: #00EEFF;
+}
+
+body { Background-Color: FFFFFF; font-size:14pt;
+}
+pre { Background-Color: #FFFFFF; font-size:12pt;
+}
+pre.ja { Background-Color: #FFFF66; font-size:12pt;
+}
+pre.pbl { Background-Color: #FFFFFF; font-size:12pt;
+	margin:5px; padding:6px;
+}
+
+code { Background-Color: #FFFFFF; font-size:12pt;
+}
+
+#tit2{ Background-Color: #FFFFFF; color: black; width: 80%;
+        font-size:14pt; font-weight: bold;
+        padding:5px; border-width:3px; border-style: ridge; 
+	border-color: white;
+    }
+#tit1 { Background-Color: #00EEFF; color: black; width: auto;
+        font-size:14pt; font-weight: bold;
+        padding:10px; border-width:3px; border-style: ridge; 
+	border-color: white; 
+    }
+
+#titaf{ Background-Color: #FFFF99; color: black; width: 80%;
+        font-size:14pt; font-weight: bold;
+        padding:5px; border-width:3px; border-style: ridge; 
+	border-color: white;
+    }
+
+#sign { Background-Color: #FFFFFF; color: black; width: auto;
+	font-size:10pt; font-weight: bold;
+	text-align: right; margin-top: 1px;
+	padding:3px; border-width:1px; 
+}
+#snom { Background-Color: #CCFFFF;  padding:3px;
+	font-size:10pt; font-weight: bold;
+	border-width:2px; border-color: red; border-style: ridge;
+}
+
+#fd { Background-Color: white; }
+#ja { Background-Color: yellow; }
+#ja1 { Background-Color: #FFFFDD; }
+#ja2 { Background-Color: #FFDDFF; }
+#re { Background-Color: red; Color: white; }
+#ve { Background-Color: #66FF00; }
+#bl { Background-Color: #CCFFFF; }
+#p1 { width: 75%; text-align: justify;}
+//-->
+</style>
+<style type="text/css"></style><script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script><style type="text/css"></style></head>
+<body>
+<!-- ________________________________________________________________________ -->
+<center><table border="" width="100%">
+<tbody><tr><td width="180">
+<center><img src="./ HTTP - CSS - JavaScript Ajax - PHP _files/logo_utc.jpg" align="CENTER"></center></td>
+
+<td>
+<center><b><font color="#7F7F7F" size="+3">TD <i>briques de base du web</i> (durée : 6 heures)</font></b></center>
+<center><b><font color="#7F7F7F" size="+3">HTTP - CSS - JavaScript/Ajax - PHP</font></b></center>
+</td></tr>
+</tbody></table></center><hr>
+<!-- ________________________________________________________________________ -->
+<!-- 
+<P id="tit2">
+<A HREF="http://tice.utc.fr/moodle/course/view.php?name=SR03">Retour page d'accueil sr03.</A><br />
+</P>
+-->
+
+<!--
+<P id="titaf">
+FOND JAUNE, caractères gras
+</P>
+-->
+<div id="ja1">
+<ul>
+
+<p><br></p><p>
+<font size="+2"><b>Première partie : génération et observation de trafic HTTP, utilisation de CSS</b></font>
+
+<br></p><p>
+Une bonne compréhension du fonctionnement du protocole HTTP est indispensable aux spécialistes des technologies du web. Voici un exemple d'un échange avec HTTP :
+</p><p>
+<b>REQUETE HTTP <i>(assortie ici de nombreux <u>en-têtes HTTP</u>, dont aucun n'est obligatoire)</i></b>
+</p><pre><b>GET /images/udoggy.gif HTTP/1.0</b>
+Host: www.google.fr
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2011021910 Firefox/3.0.7
+Accept: image/png,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-us,en;q=0.5
+Accept-Encoding: gzip,deflate
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+Keep-Alive: 300
+Proxy-Connection: keep-alive
+Referer: http://www.google.fr/
+Cookie: PREF=ID=c2fa4cbfecb40683:TM=1235645658:LM=1235645658
+Pragma: no-cache
+Cache-Control: no-cache
+
+</pre>
+
+<b>REPONSE HTTP <i>(assortie ici d'<u>en-têtes HTTP</u> et de <u>données</u>)</i></b>
+<pre><b>HTTP/1.0 200 OK</b>
+Content-Type: image/gif
+Last-Modified: Wed, 07 Jun 2006 19:44:03 GMT
+Expires: Sun, 17 Jan 2038 19:14:07 GMT
+Cache-Control: public
+Date: Wed, 25 Mar 2011 09:22:28 GMT
+Server: gws
+Content-Length: 8866
+Connection: Keep-Alive
+
+[ données de l'image ] 
+</pre>
+</ul>
+
+<ul>
+<li>Une <i>"ligne blanche"</i> (deux <i>fins de ligne</i> successives) est utilisée pour marquer fin des en-têtes.
+</li><li><b>Attention au "mode dégradé"</b> : un <i>"vrai"</i> échange en HTTP nécessite que la requête désigne la version de HTTP utilisée par le client<br>
+(exemple : <tt>GET /images/udoggy.gif <b>HTTP/1.0</b></tt>).<br>
+Si le client initie un échange sans préciser la version du protocole<br>
+(exemple : <tt>GET /images/udoggy.gif</tt>)<br>
+le serveur va en général répondre en "mode dégradé", en envoyant (dans la mesure du possible) les données demandées,
+sans prendre en compte les en-têtes que le client pourrait envoyer, et sans aucun en-tête d réponse.
+</li></ul>
+
+<ol>
+<p>
+</p><li><u>Le HTTP en direct</u><p>
+
+Générez un échange HTTP sans l'aide d'un navigateur web. Réduisez les en-têtes HTTP à un minimum. Depuis un shell (Terminal) utilisez l'utilitaire <b><i>nc</i></b> (syntaxe : <tt>nc serveur port</tt>).
+Cet utilitaire établit une connexion TCP vers le serveur+port de votre choix, envoie au socket distant ce que vous tapez, et affiche ce que le socket distant
+renvoie. C'est un moyen pratique de déboguer les protocoles "non binaires". Récupérer la page dont l'URL est <tt>http://tuxa.sme.utc/</tt>.<br>
+<b>Dans la <i>réponse</i>, quels en-têtes HTTP précèdent la page HTML ?</b><br>
+<b>Dans la <i>requête</i>, est-ce que tout en-tête est facultatif en HTTP/1.0 ? &nbsp; En HTTP/1.1 ?</b></p><p>
+
+<i>CONSEILS PRATIQUES</i></p><ul>
+<li>Les serveurs HTTP ont en général un temporisateur qui plafonne le délai entre l'établissement du socket et la réception de la requête complète. À moins de taper très vite, préparez votre requête à l'avance afin de la copier-coller vers <b><i>nc</i></b>.
+</li><li>Sinon, en cas d'erreur typographique, dans <b><i>nc</i></b> vous pouvez utiliser la séquence CTRL-H à la place du caractère BACKSPACE.
+</li><li>Sauf si la réponse est courte, vous pouvez trouver commode d'envoyer la sortie de <b><i>nc</i></b> vers un fichier (ex: <tt>nc tuxa.sme.utc 80 &gt; toto.html)</tt> que vous examinerez après grâce à un éditeur de texte.</li></ul>
+
+<br><p>
+</p></li><li>Même chose que dans la question précédente, mais cette fois vous devez <u>récupérer une page depuis un serveur se trouvant en dehors de l'UTC</u> : la page dont l'URL est <tt>http://www.google.fr/</tt>. Si cela ne fonctionne pas comme prévu, réfléchissez à la configuration de votre navigateur lorsqu'il doit émettre des requêtes depuis le réseau UTC. Il s'agit d'utiliser l'utilitaire <b><i>nc</i></b> SANS avoir recours à l'option -x (ni à -X, ni à -P), car ces options rendent l'échange moins transparent et diminuent la valeur pédagogique de l'exercice. Une fois que vous aurez récupéré <tt>http://www.google.fr/</tt>, faites la même chose pour <tt>http://www.google.com/</tt>. <b>Qu'y a-t-il de différent ? À votre avis, serait-il possible de modifier votre requête pour que le fonctionnement soit semblable dans les deux cas ?</b>
+
+<br><p>
+</p></li><li><u>Observez les en-têtes HTTP depuis le navigateur</u><p>
+
+Nous allons maintenant passer au navigateur, qui ne va en général pas afficher les en-têtes reçus et envoyés.</p><p>
+
+Pour visualiser les en-têtes HTTP <b>côté client</b>, nous pouvons soit écouter le trafic réseau avec un outil tel <b><i>Wireshark</i></b> (fastidieux), soit utiliser un outil de déboguage tel <b><i>Firebug</i></b> qui a plein d'autres fonctionnalités utiles.</p><p>
+
+Pour visualiser les en-têtes HTTP <b>côté serveur</b>, des <i>scripts</i> exécutés par le serveur HTTP peuvent afficher des informations sur l'environnement d'exécution, dont des en-têtes HTTP de la requête. Mais ici nous sommes tributaires du bon vouloir du serveur : il faut que le serveur accepte d'exécuter de tels scripts et qu'il passe les en-têtes de la requête à l'environnement d'exécution du script (c'est à dire au processus PHP, par exemple).</p><p>
+
+Lancez Firefox et installer le module <b><i>Firebug</i></b> en allant sur <a target="_blank" href="https://addons.mozilla.org/fr/firefox/addon/firebug/">la page de téléchargement</a> de ce dernier.
+Si ce n'est pas encore fait, authentifiez-vous au niveau du serveur Moodle en passant par <a target="_blank" href="http://ent.utc.fr/">l'ENT</a>. Nous allons également éliminer la possibilité que Firefox récupère des ressources de son propre cache : Edition &gt; Préférences &gt; Avancé &gt; vider le cache et réduire sa capacité à zéro. Activer tous les panneaux que propose Firebug grâce aux menu contextuel (clic-droit sur le cafard en bas à droite de la fenêtre de Firefox). Exécuter Firebug, sélectionner dans la première barre menu l'onglet <b>Réseau</b> et dans la deuxième <b>Tous</b> types de documents. Recharger la page actuelle et son contenu avec SHIFT+RELOAD (touche Maj + cliquer sur l'icône qui actualise la page).</p><p>
+<b>Observer les échanges en HTTP nécessaires pour charger la page et son contenu. Combien y a-t-il de requêtes ? Pourquoi ?</b></p><p>
+
+Depuis votre navigateur, faites exécuter par le serveur web sur tuxa.sme.utc un script PHP <a target="_blank" href="http://tuxa.sme.utc/~sr03/phpinfo/info_modules.php">info_modules.php</a>
+contenant un appel à <i>phpinfo(INFO_MODULES)</i>. <b>Observez les en-têtes HTTP dans les deux sens.</b> (Ce sont les en-têtes HTTP et l'environnement Apache qui nous intéressent, et non les modules PHP que le serveur propose.) <b>Comparez les en-têtes (dans les deux sens) tels que le script PHP les affiche côté serveur, et les en-têtes tels que Firebug les affiche côté client. S'il y a des différences, pourquoi est-ce le cas ?</b></p><p>
+
+Parmi les éléments de l'environnement Apache, <b>REMOTE_ADDR</b> est l'adresse IP du client. <b>Pourquoi cette information ne figure-t-elle pas parmi les en-têtes HTTP ?</b> L'adresse que vous voyez affichée correspond à quelle machine ? Modifiez le paramétrage de votre navigateur de sorte que <b>REMOTE_ADDR</b> affiche une adresse IP commençant par '172'. <b>Quels changements remarquez-vous dans les en-têtes HTTP en raison de ce nouveau paramétrage ?</b>
+
+<br></p><p>
+</p></li><li><u>Données envoyées du client au serveur : la <i>Query String</i>, la méthode <i>POST</i></u><p>
+Faites exécuter un autre script PHP <a target="_blank" href="http://tuxa.sme.utc/~sr03/phpinfo/info_variables.php">info_variables.php</a> en rajoutant un point d'interrogation suivi d'une chaîne de caractères quelconques :<br>
+<tt>http://tuxa.sme.utc/~sr03/phpinfo/info_variables.php<b>?caelhR8349H</b></tt><br>
+<b>Quel impact a cette 'donnée supplémentaire' côté serveur au niveau de l'applicatif ? Est-ce que sa présence change quelque chose au niveau des en-têtes HTTP de la requête, en dehors de l'URL ?</b></p><p>
+
+Maintenant 'structurez' cette chaîne complémentaire à l'aide du caractère '=' et éventuellement de '&amp;' :<br>
+<tt>http://tuxa.sme.utc/~sr03/phpinfo/info_variables.php<b>?toto=tata&amp;tutu=titi</b></tt><br>
+<b>Qu'est-ce qui change ?</b></p><p>
+
+Le script <a target="_blank" href="http://tuxa.sme.utc/~sr03/phpinfo/print_r_request.php">print_r_request.php</a> affiche le contenu de la variable PHP <tt>$_REQUEST</tt> (le vecteur <tt>$_REQUEST</tt> étant l'union des vecteurs <tt>$_GET</tt> et <tt>$_POST</tt>). Créez un formulaire HTML pour accéder à cette page dynamique en alimentant avec des chaînes de caractères de votre choix la variable <tt>$_REQUEST</tt>. Utilisez la méthode POST et observer l'échange HTTP en utilisant <b><i>Firebug</i></b>. Maintenant, <b>utilisez <i>nc</i> pour faire exécuter ce script <tt>print_r_request.php</tt> en envoyant des données 'manuellement' par la méthode <i>POST</i></b>.
+
+
+<br></p><p>
+</p></li><li><u>Les <i>cookies</i></u><p>
+Allez sur un site web de votre choix qui positionne des cookies. Observez avec <b><i>Firebug</i></b> l'élément de l'échange HTTP qui fait positionner le cookie dans votre navigateur.</p><p>
+
+
+Le script <a target="_blank" href="http://tuxa.sme.utc/~sr03/phpinfo/setcookie.php">http://tuxa.sme.utc/~sr03/phpinfo/setcookie.php</a> accepte des arguments passés (via un GET ou un POST) et provoque l'envoi d'un cookie dans les en-têtes de réponse.<br>
+Ces arguments (tous facultatifs) sont : </p><ul>
+<li><tt>name</tt> : le nom du cookie
+</li><li><tt>value</tt> : sa valeur
+</li><li><tt>path</tt> : le chemin sur le serveur que le cookie concerne
+</li><li><tt>domain</tt> : le domaine d'application du cookie
+</li><li><tt>expireseconds</tt> : utilisé par le script pour générer la clause 'expires' associée au cookie
+</li><li><tt>phpinfo</tt> : si cet argument est fourni (avec une valeur quelconque) le script appelle aussi <i>phpinfo(INFO_MODULES)</i> pour qu'on voie dans le navigateur l'en-tête <tt>Set-Cookie</tt> tel qu'il partira du serveur
+</li></ul><br>
+
+Utilisez ce script pour positionner des cookies. Faites un formulaire HTML pour appeler <i>setcookie.php</i>. <b>Utilisez au moins deux types d'éléments différents pour la saisie des six arguments possibles, et faites en sorte que l'argument "phpinfo" puisse être envoyé OU NON.</b> Observer ce qui se passe au niveau des en-têtes HTTP, au moment où le cookie est positionné, et lors d'autres requêtes HTTP envoyées ultérieurement au même serveur. Faites des essais en variant les arguments envoyés à <i>setcookie.php</i>. Localiser la fonctionnalité d'affichage de cookies de votre navigateur. Examiner les cookies que vous venez de positionner.<p>
+
+Positionner d'autres cookies, avec ces domaines : </p><ul>
+<li>tuxa.sme.utc
+</li><li>sme.utc
+</li><li>utc
+</li><li>utc.fr
+</li><li>microsoft.com
+</li></ul><br>
+
+Que se passe-t-il dans les <b>cinq</b> cas, côté serveur et côté navigateur ? <b>Proposez des explications de toute différence de comportement que vous pourriez voir en fonction du domaine utilisé.</b>
+
+<br><p>
+</p></li><li><u>CSS</u><p>
+Voici quelques règles de style. <b>Les inclure dans une page HTML qui les applique toutes de façon à ce que cela se voie.</b>
+</p><pre>.tt { background-color: red; }
+td.cell5 { border: 5px dashed blue; }
+a:visited { color: red; font-size: 10px; }
+div#up { position:absolute; left:150px; top:150px; height:200px; overflow-x:hidden; overflow-y:auto; zindex:2}
+#pushme { font-size: 24pt; }
+</pre>
+<p>
+
+</p><p><br></p><p>
+<font size="+2"><b>Fin de la première partie : avant de continuer, demandez au chargé de TD de contrôler votre travail</b></font>
+
+<br></p><p>
+<br></p><p>
+</p></li></ol></div>
+
+<!-- ________________________________________________________________________ -->
+<br><hr><br>
+
+<div id="ja2">
+<ul>
+
+<p><br></p><p>
+<font size="+2"><b>Deuxième partie : exercices autour de JavaScript et de PHP</b></font>
+
+<br></p><p><br>
+</p><h4>JavaScript/Ajax</h4><ul>
+
+<i>
+Vous allez réaliser une page web comportant du code JavaScript pour exploiter un service d'informations sur des étudiants à l'UTC.<p>
+
+Ce service se trouve à l'URL suivant : 
+    <a target="_blank" href="http://tuxa.sme.utc/~sr03/phpinfo/studentdata.php">http://tuxa.sme.utc/~sr03/phpinfo/studentdata.php</a></p><p>
+
+Les données diffusées sont au format XML et se limitent au nom et au prénom des étudiants. Pour générer des données utiles il est nécessaire de passer au script une chaîne de caractères correspondant au début du nom des étudiants recherchés. La longueur de cet argument "debutnom" est de 2 à 30 caractères. Exemple : <a target="_blank" href="http://tuxa.sme.utc/~sr03/phpinfo/studentdata.php?debutnom=pha">http://tuxa.sme.utc/~sr03/phpinfo/studentdata.php?debutnom=pha</a></p><p>
+
+Il s'agit de commencer par une version "synchrone" (on saisit un début de nom dans une zone de texte, on clique sur un bouton, on regarde s'afficher la liste des étudiants).</p><p>
+
+Ensuite l'application sera améliorée pour que la liste affichée s'ajuste de manière "asynchrone", au fur à mesure du rajout et de l'effacement de caractères dans la zone de texte, sans qu'un bouton soit nécessaire pour déclencher l'interrogation.</p></i><p><i> 
+</i>
+</p><hr><br>
+
+<b><i>1.1</i></b>&nbsp; &nbsp; <u>Le squelette de l'application</u> - (étape préliminaire pour aider ceux qui écrivent du JavaScript pour la première fois, les autres pouvant passer directement à la suite)<p>
+
+Réalisez une page HTML que vous mettrez dans votre répertoire public_html et que vous chargerez dans votre navigateur via le serveur Apache sur tuxa.sme.utc :
+<br>&nbsp; &nbsp;  <i>http://tuxa.sme.utc/~[votre login]/[nom de votre ficher HTML]</i></p><p>
+Cette page comportera :</p><ul>
+
+<li>un formulaire regroupant une balise <tt>&lt;INPUT type="text" ..&gt;</tt> pour saisir une chaine de caractères, ainsi qu'une balise <tt>&lt;INPUT type="button" ..&gt;</tt> pour déclencher une action<p>
+
+</p></li><li>une <i>DIV</i> pour l'affichage du HTML généré dynamiquement<p>
+
+</p></li><li>une fonction JavaScript <i>displayData()</i> (déclenchée par un clic du bouton), qui prendra en argument les deux objets correspondant respectivement à la zone de saisie et à la zone d'affichage, et qui affichera dans la zone d'affichage la chaîne <tt>'Bonjour '</tt> concaténée avec la chaîne de caractères saisie
+</li></ul>
+
+<br>
+<b><i>1.2</i></b>&nbsp; &nbsp;  <u>La connexion (pour l'instant synchrone) avec le service studentdata.php</u><p>
+
+Créez une fonction JavaScript <i>getListOfStudents()</i> qui retourne un bloc XML obtenu du service <u>studentdata.php</u> grâce à une utilisation SYNCHRONE d'un objet de type <i>XMLHttpRequest</i>. <i>getListOfStudents()</i> prendra en premier argument la chaîne de caractères à passer à <u>studentdata.php</u>, et le deuxième argument servira à déterminer si la requête HTTP sous-jacente sera une <i><b>GET</b></i> ou une <i><b>POST</b></i>. Une fois votre application en place, vous contrôlerez le bon fonctionnement de ces deux types de requête.<br>
+
+<br></p><p>
+<b><i>1.3</i></b>&nbsp; &nbsp; <u>L'application synchrone</u></p><p>
+
+Réalisez une page HTML comportant</p><ul>
+
+<li>un formulaire et une <i>DIV</i> (voir <b><i>1.1</i></b> plus haut)<p>
+
+</p></li><li>une fonction JavaScript <i>displayData()</i> (déclenchée par un clic du bouton), qui prendra en argument les deux objets correspondant respectivement à la zone de saisie et à la zone d'affichage. Le HTML affiché dans la <i>DIV</i> sera le résultat d'une transformation du bloc XML retourné par  <i>getListOfStudents()</i>. Pour parser le bloc XML nous vous proposons d'utiliser la méthode XML DOM <i>getElementsByTagName</i>. On trouve sur le web de nombreuses pages pédagogiques traitant de ces méthodes DOM, par exemple <a href="https://developer.mozilla.org/fr/docs/DOM/element.getElementsByTagName">ici</a>. Si vous préférez faire autrement pour extraire les éléments désirés du XML, n'hésitez pas.
+</li></ul>
+
+<br>
+<b><i>2.1</i></b>&nbsp; &nbsp; <u>Le passage vers l'asynchrone</u><p>
+
+Sauvegardez la page synchrone sous le nom de <b><tt>studSync.html</tt></b>, recopiez-la vers un autre page qui va devenir la version asynchrone. Recopiez la fonction <i>getListOfStudents()</i> vers une autre fonction <i>getListOfStudentsAsync()</i>, où la méthode <i>open</i> de l'objet <i>XMLHttpRequest</i> sera appelée "en asynchrone". Lors de la réception d'un nouveau bloc XML, celui-ci est à transformer en HTML et à afficher immédiatement.
+
+<br></p><p>
+<b><i>2.2</i></b>&nbsp; &nbsp; <u>La mise à la retraite du bouton de déclenchement</u></p><p>
+
+Rajoutez dans les fonctions JavaScript une fonction <i>mainLoop()</i>, qui, avant de retourner, doit assurer sa propre relance après un délai de 300 ms. <i>mainLoop()</i> doit contrôler si le texte présent dans la zone de texte a bougé depuis le dernier contrôle. Si (et seulement si) c'est le cas, un nouvel affichage des données sera déclenché. Le premier appel à <i>mainLoop()</i> est à faire 300 ms après le chargement de la page. Cette scrutation périodique rend le bouton superflu.</p><p>
+
+</p></ul><br><p>
+
+<br></p><p>
+</p><h4>PHP</h4>
+
+<i>Pour vos scripts PHP vous pouvez consulter la documentation PHP à <a target="_blank" href="http://www.php.net/">http://www.php.net/</a>, et en particulier la documentation des différentes fonctions qui existent.</i><p>
+
+</p><ol>
+<li>Réalisez un script PHP pour lire un fichier JPEG que vous aurez rapatrié vers votre espace disque
+(suggestion : en utilisant la fonction PHP <i>fread()</i>) et envoyer le contenu du fichier lu vers la
+sortie standard.<p>
+Faites en sorte que l'image soit affichée par le navigateur web.</p><p>
+
+</p></li><li><font size="-1"><i> Rappel : Dans le répertoire <a href="http://tuxa.sme.utc/~sr03/phpinfo/">http://tuxa.sme.utc/~sr03/phpinfo/</a> il y a un script </i>setcookie.php<i> qui accepte des arguments passés dans la QUERY STRING de la commande GET (ou via une commande POST) et qui provoque l'envoi d'un cookie dans les en-têtes de réponse.<br>
+Ces arguments (tous facultatifs) sont : <ul>
+<li><tt>name</tt> : le nom du cookie (<tt>"cookieName"</tt>, au cas où cet argument ne serait pas fourni)
+</li><li><tt>value</tt> : sa valeur (<tt>"cookieValue"</tt>, au cas où cet argument ne serait pas fourni)
+</li><li><tt>path</tt> : le chemin sur le serveur que le cookie concerne (<tt>"/"</tt>, au cas où cet argument ne serait pas fourni)
+</li><li><tt>domain</tt> : le domaine d'application du cookie (<tt>"tuxa.sme.utc"</tt>, au cas où cet argument ne serait pas fourni)
+</li><li><tt>expireseconds</tt> : nombre de secondes de validité (au cas où cet argument ne serait pas fourni, le cookie expirera à la fermeture du navigateur)
+</li></ul></i></font><br>
+Créez votre propre script <i>setcookie.php</i> pour faire la même chose. Vous pouvez le tester en utilisant le formulaire HTML réalisé plus haut (voir l'exercice 5. de la première partie).<p>
+
+</p></li><li>Créez un script PHP <tt>button.php</tt> pour afficher un bouton HTML, en utilisant cette syntaxe :<p>
+<tt>&lt;input type="button" ........ &gt;</tt></p><p>
+Le fait de cliquer sur le bouton doit solliciter un autre script <tt>display.php</tt>. Utilisez du code JavaScript, et non une balise <tt>&lt;form action=........ &gt;</tt>, pour charger <tt>display.php</tt>.</p><p>
+
+</p></li><li>Dans <tt>button.php</tt> ajoutez un appel à <i>session_start()</i> et initialisez quelques variables
+de session.<p>
+Dans <tt>display.php</tt> initialisez d'<i>autres</i> variables de session, avant d'afficher l'ensemble
+des variables de session grâce à un appel à <i>print_r()</i>.</p><p>
+
+</p></li><li>On devient parano, on supprime l'ensemble des cookies stockés par son navigateur, et on configure
+le navigateur pour ne plus accepter aucun cookie.<p>
+Refaites tourner <tt>button.php</tt> et <tt>display.php</tt>. Observez ce qui change.</p><p>
+
+</p></li><li>En conservant cette configuration parano du navigateur, modifiez <tt>button.php</tt> et
+<tt>display.php</tt> de manière à ce que les variables de session soient communiquées correctement entre les deux scripts. Il ne s'agit en aucun cas de retransmettre l'ensemble des données de session via le client web en les encapsulant dans des messages HTTP ; ces données de session se trouvant déjà sur le serveur (et pouvant être volumineuses), on évite de consommer inutilement de la bande passante.<p>
+
+</p></li><li>Transformez votre fichier <b><tt>studSync.html</tt></b> (voir l'exercice <b><i>2.1</i></b> plus haut) en un script PHP qui fait mémoriser au navigateur les 10 dernières recherches effectuées (la chaîne de caractères saisie, non les résultats affichés), de manière à ce que le script rappelle cette liste à l'utilisateur à chaque fois qu'il va sur la page, même si le navigateur a été fermé entre deux visites.
+
+</li></ol><br><p>
+
+</p><p><br>
+<font size="+2"><b>Fin de la deuxième partie : ne sortez pas de la deuxième séance avant de demander au chargé de TD de contrôler votre travail</b></font>
+
+<br></p><p>
+<br></p><p>
+</p></ul></div>
+
+<!-- ________________________________________________________________________ -->
+<br><hr><br>
+
+
+
+</body></html>
