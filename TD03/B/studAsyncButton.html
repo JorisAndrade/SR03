@@ -1,0 +1,61 @@
+<html>
+<head>
+<style type="text/css">
+td {
+    border:1px solid black;
+}
+</style>
+</head>
+<body >
+<form>
+    <label for="debutnom">debut nom :</label><input id="debutnom" name="debutnom" type="text"> 
+    <input type="button" value="envoyer" onClick="displayData()"/>
+</form>
+<div>
+<table>
+<thead>
+    <tr>
+        <td>firstname</td>
+        <td>lastname</td>
+    </tr>
+</thead>
+<tbody id="tab_response">
+</tbody>
+</table>
+</div>
+</body>
+<script>
+function displayData() {
+    var nom = document.getElementById("debutnom").value;
+    getListOfStudentsAsync(nom, false);
+}
+
+function handler() {
+    var response = document.getElementById("tab_response");
+    if (this.readyState==4 && this.status==200) {
+        var xml = this.responseXML;
+        var students = xml.getElementsByTagName("utcstudent");
+        for (var i = 0; i < students.length; i++) {
+            var lastname = students[i].children[0].textContent;
+            var firstname = students[i].children[1].textContent;
+            response.innerHTML += "<tr><td>" + firstname + "</td><td>" + lastname + "</td></tr>";
+        }
+    }
+}
+
+
+function getListOfStudentsAsync(nomEtu, post) {
+  var client = new XMLHttpRequest();
+  var baseUrl = "http://tuxa.sme.utc/~sr03/phpinfo/studentdata.php";
+  client.onreadystatechange = handler;
+  if (post) {
+    client.open("POST", baseUrl);
+    client.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    client.send("debutnom=" + nomEtu);
+  } else {
+    client.open("GET", baseUrl + "?debutnom=" + nomEtu);
+    client.send();
+  }
+}
+</script>
+</html>

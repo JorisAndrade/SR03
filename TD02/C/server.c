@@ -79,10 +79,10 @@ int main(int argc, char **argv) {
  	        case 0 : // Processus Fils
  	            while (1) {
 
-
+                    sleep(1);
                     rcv_new_msg(sds, &objet_buffer, sizeof(objet_buffer));
 
-                    sleep(1);
+
 
                     print_objet(&objet_buffer);
 

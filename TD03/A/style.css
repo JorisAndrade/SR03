@@ -1,0 +1,5 @@
+.tt { background-color: red; }
+td.cell5 { border: 5px dashed blue; }
+a:visited { color: red; font-size: 10px; }
+div#up { position:absolute; left:150px; top:150px; height:200px; overflow-x:hidden; overflow-y:auto; zindex:2}
+#pushme { font-size: 24pt; }

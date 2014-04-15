@@ -1,0 +1,192 @@
+###### Question 1 #########
+
+Request :
+GET / HTTP/1.0
+
+Response :
+HTTP/1.1 200 OK
+Date: Tue, 01 Apr 2014 15:00:46 GMT
+Server: Apache/2.2.17 (Fedora)
+Last-Modified: Tue, 27 Mar 2012 08:06:26 GMT
+ETag: "113b9d-156f-4bc34f7a5c480"
+Accept-Ranges: bytes
+Content-Length: 5487
+Connection: close
+Content-Type: text/html
+X-Pad: avoid browser bug
+
+=> en HTTP 1.0 aucun des headers ne sont obligatoires... on recoit la réponse avec les headers suivant :
+
+
+
+Request :
+GET / HTTP/1.1
+
+Response :
+HTTP/1.1 400 Bad Request
+Date: Tue, 01 Apr 2014 15:03:39 GMT
+Server: Apache/2.2.17 (Fedora)
+Content-Length: 304
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
+=> erreur 400 certains headers semblent obligatoires
+
+
+GET / HTTP/1.1
+Host: tuxa.sme.utc
+
+=> avec le header "Host"
+
+###### Question 2 #########
+
+GET / HTTP/1.1
+Host: www.google.fr
+
+=> ne fonctionne pas / fait référence au proxy
+
+Request :
+GET http://www.google.fr/ HTTP/1.1
+Host: www.google.fr
+
+Response :
+HTTP/1.0 200 OK
+Date: Tue, 01 Apr 2014 15:11:48 GMT
+Expires: -1
+Cache-Control: private, max-age=0
+Content-Type: text/html; charset=ISO-8859-1
+Set-Cookie: PREF=ID=ca307fae42c89fce:FF=0:TM=1396365108:LM=1396365108:S=avb0YiQFkPy87o3L; expires=Thu, 31-Mar-2016 15:11:48 GMT; path=/; domain=.google.fr
+Set-Cookie: NID=67=aNUHyY_54EEwsa_qCw0n3ycuN2LmrVmZc5xw_2azXpR1pkHTseSiwICybHWDtBAaH9K3aH5seR7krG-QetIdbFVXsFltzzZpPDDJBQkdKjDcDky-_3BEJPHwWkQWJueJ; expires=Wed, 01-Oct-2014 15:11:48 GMT; path=/; domain=.google.fr; HttpOnly
+P3P: CP="This is not a P3P policy! See http://www.google.com/support/accounts/bin/answer.py?hl=en&answer=151657 for more info."
+Server: gws
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+Alternate-Protocol: 80:quic
+X-Cache: MISS from proxy-cache.utc.fr
+Via: 1.0 proxy-cache.utc.fr:3128 (squid/2.6.STABLE18-20080214)
+Proxy-Connection: close
+
+=> il faut écrire l'url complete dans le get
+
+###############
+
+Request:
+GET http://www.google.com/ HTTP/1.1
+Host: www.google.com
+
+Response :
+HTTP/1.0 302 Moved Temporarily
+Cache-Control: private
+Content-Type: text/html; charset=UTF-8
+Location: http://www.google.fr/?gfe_rd=cr&ei=-Nc6U4CUFMbI8ge6uIDQDg
+Content-Length: 258
+Date: Tue, 01 Apr 2014 15:15:04 GMT
+Server: GFE/2.0
+Alternate-Protocol: 80:quic
+X-Cache: MISS from proxy-cache.utc.fr
+Via: 1.0 proxy-cache.utc.fr:3128 (squid/2.6.STABLE18-20080214)
+Proxy-Connection: close
+
+=> redirection vers google.fr
+
+##############
+
+Request:
+GET http://www.google.com/ HTTP/1.1
+Host: www.google.com
+Accept-Language: en-US
+
+=> toujours une redirection google semble filtrer par IP
+
+
+Request:
+GET http://www.google.com/ncr HTTP/1.1
+Host: www.google.com
+
+=> redirige vers www.google.com donc pas possible
+
+
+###### Question 3 #########
+
+=> 42 une requete par images une pour le html et une pour lcss
+
+du coté de la requete les differences sont les suivantes : 
+
+Via 	1.1 proxy-cache.utc.fr:3128 (squid/2.6.STABLE18-20080214)
+X-Forwarded-For 	172.22.19.2 
+
+Ce sont des headers ajouté par proxyweb.utc.fr
+
+concernant la réponse :
+
+le serveur (moodle) envoie
+
+(au niveau de php)
+X-Powered-By 	PHP/5.3.8 
+(au niveau apache => pas afficher dans php info )
+Content-Type	text/html
+Date	Tue, 01 Apr 2014 15:49:15 GMT
+Server	Apache/2.2.17 (Fedora)
+
+ajouter par le proxy & cache (proxyweb.utc.fr)
+Via	1.0 proxy-cache.utc.fr:3128 (squid/2.6.STABLE18-20080214)
+X-Cache	MISS from proxy-cache.utc.fr
+Proxy-Connection	close
+
+
+Pourquoi cette information ne figure-t-elle pas parmi les en-têtes HTTP ?
+=> incapable de le preciser le client ne connait pas son adresse "publique" ou tout du moins l'adresse ip via la quelle il communique avec le serveur (le dernier serveur qui communique la requete a l'autre serveur)
+=> couche OSI differente lors de l'elaboratino de la requete http on ne connais pas l'ip du routeur, serveur, passerelle qui communiquera avec le serveur.
+
+L'adresse que vous voyez affichée correspond à quelle machine ? => la passerelle dans notre cas le proxy
+
+Modifiez le paramétrage de votre navigateur de sorte que REMOTE_ADDR affiche une adresse IP commençant par '172' => enlever le proxy
+tous ls headers que nous avions indiqué comme etant ajouté par le proxy ne sont plus présentes.
+
+###### Question 4 #########
+
+au niveau application une nouvelle variable est disponible  (tableau global _GET et _REQUEST avec pour indice le nom de la valeur dans le get)
+
+Est-ce que sa présence change quelque chose au niveau des en-têtes HTTP de la requête, en dehors de l'URL ?
+=> endehors de l'url rien n'est changé
+
+http://tuxa.sme.utc/~sr03/phpinfo/info_variables.php?toto=tata&tutu=titi
+
+=> pas de changement dans les headers
+=> du coté serveur les variable toto et tutu ont maintenant des valeurs assignée (tata et titi)
+
+lors du post on a des headers en plus :
+Content-Length	56
+Content-Type	application/x-www-form-urlencoded
+
+
+pour envoyer via nc :
+
+POST http://tuxa.sme.utc/~sr03/phpinfo/print_r_request.php?var_get=test HTTP/1.1
+Host: tuxa.sme.utc
+Content-Length: 56
+Content-Type: application/x-www-form-urlencoded
+
+var_post_1=salut&var_post_2=boloss&ok=valider_par_bouton
+
+
+###### Question 5 #########
+
+Lors du premier echange le header de request ne comporte pas de particularité. On reçoit en revanche (response
+header) une entête "set-Cookie" avec la valeur "<cookieName>"="<cookieValue>; path=<path>; domain=<domain>"
+
+plus généralement apres la partie clé=valeur les paramètres du cookies sont placés voici un exemple plus complet
+avec un cookie positionné par google :
+
+Set-Cookie	PREF=ID=535cddf4c74b312e:FF=0:TM=1396370701:LM=1396370701:S=kFsYDsABF4pLAxsZ; expires=Thu, 31-Mar-2016 16:45:01 GMT; path=/; domain=.google.fr NID=67=Wjh_WinYIhA68YFJsDgqq7daCAP4LwCFeN0AfACJI966yJzhSsJ7uH4-UFJlFkNgTRgBYmYlNmzsIsvbHdDee0gExWvn9csWMCuTkvP6HH2LdwSZ3vyZey8z7XJffGrj; expires=Wed, 01-Oct-2014 16:45:01 GMT; path=/; domain=.google.fr; HttpOnly
+
+quand on recharge la page le navigateur renvoie les cookies au server dans le header "Cookie"
+avec pour valeur "<nom_cookie1>=<value_cookie_1>; <nom_cookie2>=<value_cookie_2>"
+
+tuxa.sme.utc => reçu et renvoyé
+sme.utc => idem
+utc => set cookie bien envoyé mais le navigateur ne l'enregistre pas !
+utc.fr => idem
+microsoft.com => idem
+
+=> le nom de domaine peut etre une partie du nom de domaine et doit etre valide
